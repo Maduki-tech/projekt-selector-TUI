@@ -2,6 +2,9 @@ package frontend
 
 import (
 	"fmt"
+	"os"
+
+	"david/project-selector/backend"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -14,7 +17,7 @@ type model struct {
 }
 
 // Initialice the model with data
-func initalModle() model {
+func InitalModle() model {
 	return model{
 		choices: []string{"React", "NextJS", "HTML5", "VUE"},
 		// IDK
@@ -58,12 +61,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "enter", " ":
 			fmt.Println(m.choices[m.cursor])
+
+			p := tea.NewProgram(backend.InitalModle())
+			if err := p.Start(); err != nil {
+				fmt.Printf("Alas, there's been an error: %v", err)
+				os.Exit(1)
+			}
 		}
 	}
 	return m, nil
 }
 
-	// what gets redert in the terminal
+// what gets redert in the terminal
 func (m model) View() string {
 	s := "Select a Frontend Framework\n\n"
 
@@ -72,7 +81,6 @@ func (m model) View() string {
 		if m.cursor == i {
 			cursor = ">"
 		}
-
 
 		s += fmt.Sprintf("%s %s \n", cursor, choice)
 	}
